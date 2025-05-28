@@ -1,4 +1,4 @@
-public abstract class Account {
+abstract class Account {
     protected String accountNumber;
     protected String pin;
     protected double balance;
