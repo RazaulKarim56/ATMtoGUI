@@ -1,13 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class ATMmainGUI {
+public class ATMmachineGUI {
+
     private static ATMUser user = new ATMUser("1878862488", "018106", 15000.00);
     private static int attempts = 0;
-    private static boolean isLocked = false;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Java ATM");
@@ -25,11 +22,6 @@ public class ATMmainGUI {
         frame.add(panel);
 
         loginButton.addActionListener(e -> {
-            if (isLocked) {
-                JOptionPane.showMessageDialog(frame, "Account is temporarily locked. Try again later.");
-                return;
-            }
-
             String enteredPin = new String(pinField.getPassword());
 
             if (user.authenticate(enteredPin)) {
@@ -37,30 +29,12 @@ public class ATMmainGUI {
                 frame.dispose();
             } else {
                 attempts++;
-                if (attempts >= 3) {
-                    lockAccount(frame);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Incorrect PIN. Attempts left: " + (3 - attempts));
-                }
+                JOptionPane.showMessageDialog(frame, "Incorrect PIN. Attempts: " + attempts);
             }
         });
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
-
-    private static void lockAccount(JFrame frame) {
-        isLocked = true;
-        JOptionPane.showMessageDialog(frame, "Too many failed attempts. Account locked for 30 seconds.");
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            public void run() {
-                attempts = 0;
-                isLocked = false;
-                JOptionPane.showMessageDialog(null, "Account unlocked. You can try again.");
-            }
-        }, 30000); // 30 seconds
     }
 
     private static void showMenu() {
